@@ -5,7 +5,7 @@ from xml.etree.ElementTree import Element
 from typing import TypeVar
 from typing import Optional
 
-from .helpers import getContent
+from .helpers import getContent, getContentList
 
 
 class PubMedArticle(object):
@@ -19,6 +19,7 @@ class PubMedArticle(object):
         "keywords",
         "journal",
         "publication_date",
+        "publication_type",
         "authors",
         "methods",
         "conclusions",
@@ -110,6 +111,12 @@ class PubMedArticle(object):
             print(e)
             return None
 
+    def _extractPublicationType(
+        self: object, xml_element: TypeVar("Element")
+    ) -> str:
+        path = ".//PublicationType"
+        return getContentList(element=xml_element, path=path)
+
     def _extractAuthors(self: object, xml_element: TypeVar("Element")) -> list:
         return [
             {
@@ -137,6 +144,7 @@ class PubMedArticle(object):
         self.copyrights = self._extractCopyrights(xml_element)
         self.doi = self._extractDoi(xml_element)
         self.publication_date = self._extractPublicationDate(xml_element)
+        self.publication_type = self._extractPublicationType(xml_element)
         self.authors = self._extractAuthors(xml_element)
         self.xml = xml_element
 
